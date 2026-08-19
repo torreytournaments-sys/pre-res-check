@@ -227,6 +227,39 @@
   }
   .hint.warn { color: var(--clay); }
 
+  /* ---- Skip to login (secondary action) ---- */
+  .skip-row {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    flex-wrap: wrap;
+  }
+  .skip-note {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .btn-skip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--pacific-deep);
+    background: #fff;
+    border: 1.5px solid var(--pacific);
+    border-radius: 9px;
+    padding: 10px 17px;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .btn-skip:hover { background: var(--pacific); color: #fff; }
+  .btn-skip:active { transform: translateY(1px); }
+
   /* ---- Result ---- */
   .result {
     margin-top: 16px;
@@ -467,6 +500,8 @@
     .wrap { padding: 0 20px 24px; }
     .controls { flex-direction: column; }
     button.check { padding: 13px 22px; }
+    .skip-row { justify-content: center; text-align: center; }
+    .btn-skip { width: 100%; justify-content: center; }
     .hero-inner { padding-bottom: 88px; }
   }
 
@@ -506,6 +541,11 @@
         </div>
         <p class="hint" id="hint">Include the city and ZIP for the most accurate result.</p>
       </form>
+
+      <div class="skip-row">
+        <span class="skip-note">Already know you qualify?</span>
+        <a class="btn-skip" href="https://foreupsoftware.com/index.php/booking/index/19347#/login">Skip to the login page <span aria-hidden="true">&rarr;</span></a>
+      </div>
 
       <p class="sr-only" id="status" role="status" aria-live="assertive"></p>
       <div class="result" id="result" role="region" aria-label="Result" aria-live="polite" hidden></div>

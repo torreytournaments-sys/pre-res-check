@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Golf ID Card Residency Pre-Check — City of San Diego</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0A2540;
+    --pacific: #0E6BA8;
+    --pacific-deep: #084B78;
+    --confirm: #0F766E;
+    --confirm-bg: #E6F2F0;
+    --confirm-line: #B8DED7;
+    --clay: #A6521A;
+    --clay-bg: #FBF1E7;
+    --clay-line: #EAD4BE;
+    --mist: #EDF3F7;
+    --backdrop: #D6DCE3;
+    --card: #FFFFFF;
+    --line: #D9E4EC;
+    --muted: #566573;
+    --sand: #C4922E;
+    --shadow: 0 1px 2px rgba(10,37,64,.06), 0 12px 34px -12px rgba(10,37,64,.20);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    color: var(--ink);
+    background: var(--backdrop);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    padding: 40px 24px 56px;
+  }
+
+  /* ---- Floating panel ---- */
+  .panel {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 3px rgba(10,37,64,.08),
+      0 18px 40px -14px rgba(10,37,64,.28),
+      0 40px 80px -32px rgba(10,37,64,.30);
+  }
+
+  .wrap {
+    padding: 0 26px 30px;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    position: relative;
+    padding: 0 26px;
+    background: linear-gradient(180deg, #0A2540 0%, #0C3358 58%, #0E4270 100%);
+    color: #fff;
+    overflow: hidden;
+  }
+  .coast {
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    width: 100%; height: 120px;
+    display: block;
+  }
+  .hero-inner {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 40px 0 96px;
+    position: relative;
+    z-index: 2;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 9px 12px;
+    margin: 0 0 22px;
+    box-shadow: 0 4px 14px -6px rgba(0,0,0,.4);
+  }
+  .brand img { display: block; height: 34px; width: auto; }
+
+  .eyebrow {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: #9FC7E4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+  }
+  .eyebrow::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(196,146,46,.7), rgba(159,199,228,0));
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(40px, 8vw, 62px);
+    line-height: 1.02;
+    letter-spacing: .2px;
+    margin: 0 0 10px;
+  }
+  .hero-lead {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(17px, 3.4vw, 21px);
+    font-weight: 500;
+    color: #EAF3FA;
+    margin: 0 0 12px;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: #A9C6DD;
+    max-width: 48ch;
+    margin: 0;
+  }
+
+  /* ---- Lookup area ---- */
+  .card {
+    background: transparent;
+    position: relative;
+    z-index: 3;
+    padding: 6px 0 0;
+  }
+
+  label.field-label {
+    display: block;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 9px;
+  }
+
+  .controls { display: flex; gap: 10px; }
+
+  input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    color: var(--ink);
+    padding: 14px 15px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: #FBFDFE;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input[type="text"]::placeholder { color: #93A3B1; }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: var(--pacific);
+    box-shadow: 0 0 0 3px rgba(14,107,168,.16);
+    background: #fff;
+  }
+
+  button.check {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--pacific);
+    border: none;
+    border-radius: 10px;
+    padding: 0 22px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .15s, transform .05s;
+  }
+  button.check:hover { background: var(--pacific-deep); }
+  button.check:active { transform: translateY(1px); }
+  button.check:focus-visible {
+    outline: 3px solid rgba(14,107,168,.4);
+    outline-offset: 2px;
+  }
+  button.check:disabled { opacity: .6; cursor: default; }
+
+  .hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 11px 2px 0;
+    min-height: 18px;
+  }
+  .hint.warn { color: var(--clay); }
+
+  /* ---- Result ---- */
+  .result {
+    margin-top: 16px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    padding: 22px 22px 20px;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .result.show { opacity: 1; transform: none; }
+  .result[hidden] { display: none; }
+
+  .result-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  .result-verdict {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(24px, 5vw, 31px);
+    line-height: 1.12;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .result-detail {
+    font-size: 14.5px;
+    color: #33465A;
+    margin: 0;
+  }
+
+  .result.inside  { background: var(--confirm-bg); border-color: var(--confirm-line); }
+  .result.inside  .result-flag { color: var(--confirm); }
+  .result.outside,
+  .result.other   { background: var(--clay-bg); border-color: var(--clay-line); }
+  .result.outside .result-flag,
+  .result.other   .result-flag { color: var(--clay); }
+  .result.error   { background: #FBF1F1; border-color: #EBD0D0; }
+  .result.error   .result-flag { color: #A23A2E; }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; display: inline-block; }
+
+  /* ID.me next-step call to action (shown on a pass) */
+  .cta-verify {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--confirm);
+    padding: 11px 18px;
+    border-radius: 9px;
+    text-decoration: none;
+    transition: background .15s, transform .05s;
+  }
+  .cta-verify:hover { background: #0B5C55; }
+  .cta-verify:active { transform: translateY(1px); }
+  .cta-verify:focus-visible { outline: 3px solid rgba(15,118,110,.4); outline-offset: 2px; }
+  .cta-verify .arw { font-weight: 400; }
+
+  /* district block */
+  .district {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--confirm-line);
+  }
+  .district-badge {
+    flex: none;
+    width: 52px; height: 52px;
+    border-radius: 11px;
+    background: var(--confirm);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1;
+  }
+  .district-meta { min-width: 0; }
+  .district-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 2px;
+  }
+  .district-name { font-size: 15px; font-weight: 600; margin: 0; color: var(--ink); }
+  .district-links {
+    font-size: 13.5px;
+    margin: 4px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+  }
+  .district-links a { color: var(--pacific); text-decoration: none; font-weight: 500; }
+  .district-links a:hover { text-decoration: underline; }
+  .district-links span { color: var(--muted); }
+
+  .matched {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 14px 0 0;
+    display: flex;
+    gap: 7px;
+    align-items: baseline;
+  }
+  .matched b { color: #3B4C5C; font-weight: 600; }
+
+  /* spinner */
+  .spin {
+    width: 15px; height: 15px;
+    border: 2px solid rgba(255,255,255,.45);
+    border-top-color: #fff;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: -2px;
+    animation: rot .7s linear infinite;
+  }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  /* ---- Verification requirements ---- */
+  .verify {
+    margin-top: 16px;
+    background: #F8FAFC;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 20px 22px 18px;
+  }
+  .verify-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    margin: 0 0 4px;
+  }
+  .verify-head h2 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 600;
+    font-size: 21px;
+    margin: 0;
+    color: var(--ink);
+  }
+  .verify-head .req {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--clay);
+    background: var(--clay-bg);
+    border: 1px solid var(--clay-line);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .verify p.lead {
+    font-size: 14px;
+    color: #33465A;
+    margin: 0 0 15px;
+  }
+  .verify p.lead a { color: var(--pacific); font-weight: 600; text-decoration: none; }
+  .verify p.lead a:hover { text-decoration: underline; }
+  .verify .accept-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  ol.docs {
+    list-style: none;
+    counter-reset: doc;
+    margin: 0;
+    padding: 0;
+  }
+  ol.docs li {
+    counter-increment: doc;
+    position: relative;
+    padding: 0 0 12px 34px;
+    font-size: 14px;
+    color: #2C3E4E;
+    line-height: 1.5;
+  }
+  ol.docs li:last-child { padding-bottom: 0; }
+  ol.docs li::before {
+    content: counter(doc);
+    position: absolute;
+    left: 0; top: 1px;
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    background: var(--pacific);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    display: grid;
+    place-items: center;
+  }
+  ol.docs li b { font-weight: 600; color: var(--ink); }
+  ol.docs .caveat {
+    display: block;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ---- Footer note ---- */
+  .note {
+    margin-top: 22px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+  .note strong { color: #3B4C5C; font-weight: 600; }
+  .note a { color: var(--pacific); }
+
+  @media (max-width: 480px) {
+    body { padding: 16px 12px 28px; }
+    .panel { border-radius: 18px; }
+    .hero { padding: 0 20px; }
+    .wrap { padding: 0 20px 24px; }
+    .controls { flex-direction: column; }
+    button.check { padding: 13px 22px; }
+    .hero-inner { padding-bottom: 88px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .result, .spin { transition: none; animation: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="panel">
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="brand"><img src="data:image/png;base64,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" alt="City of San Diego" /></div>
+      <p class="eyebrow">City of San Diego</p>
+      <h1>Resident Golf&nbsp;ID Card</h1>
+      <p class="hero-lead">Check to see if you qualify</p>
+      <p class="hero-sub">A preliminary check of whether your address falls within City of San Diego limits. This is a first step only — it does not verify residency or qualify you for a Golf ID card.</p>
+    </div>
+    <svg class="coast" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,74 C180,44 320,96 520,80 C720,64 860,30 1040,52 C1200,72 1320,64 1440,50 L1440,120 L0,120 Z" fill="#0E4270" opacity=".55"/>
+      <path d="M0,92 C200,70 360,104 560,92 C760,80 900,58 1100,74 C1260,86 1360,84 1440,76 L1440,120 L0,120 Z" fill="#123C64" opacity=".8"/>
+      <path d="M0,104 C220,90 400,114 620,106 C840,98 980,86 1180,96 C1320,102 1380,102 1440,98 L1440,120 L0,120 Z" fill="#FFFFFF"/>
+    </svg>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <form id="lookup" autocomplete="on" novalidate>
+        <label class="field-label" for="addr">Street address</label>
+        <div class="controls">
+          <input id="addr" type="text" inputmode="text"
+                 placeholder="e.g. 11480 N Torrey Pines Rd, San Diego, CA 92037"
+                 aria-describedby="hint" />
+          <button class="check" type="submit" id="go">Check address</button>
+        </div>
+        <p class="hint" id="hint">Include the city and ZIP for the most accurate result.</p>
+      </form>
+
+      <div class="result" id="result" role="status" aria-live="polite" hidden></div>
+
+      <div class="verify">
+        <div class="verify-head">
+          <h2>Verifying residency to purchase a card</h2>
+          <span class="req">Required</span>
+        </div>
+        <p class="lead">This tool is a preliminary check only. To actually purchase a City of San Diego Golf ID card, residency must be verified through <a href="https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/c62423e2-3c7f-4e4d-9138-ff554a6caedc/19347/IDme-San%20Diego%20foreUp%20User%20Guide-Web.pdf" target="_blank" rel="noopener">ID.me</a>. We accept only the following:</p>
+        <p class="accept-label">Accepted documents</p>
+        <ol class="docs">
+          <li>A valid <b>CA driver&rsquo;s license or ID</b> with an eligible City of San Diego address.</li>
+          <li>A valid <b>CA auto registration</b> with an eligible City of San Diego address.</li>
+          <li>A current <b>property tax bill</b> with an eligible City of San Diego property address.<span class="caveat">Trusts require additional documentation and are accepted on a case-by-case basis.</span></li>
+          <li>A valid <b>student ID</b> with proof of full enrollment.</li>
+          <li><b>Active Duty Military</b> stationed in San Diego.</li>
+        </ol>
+      </div>
+
+      <p class="note">
+        <strong>How this works.</strong> Your address is matched against the City&rsquo;s official council-district boundaries. It&rsquo;s a preliminary check only — it doesn&rsquo;t confirm residency or eligibility. That&rsquo;s done through ID.me with an accepted document.
+      </p>
+    </section>
+  </main>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var form   = document.getElementById("lookup");
+  var input  = document.getElementById("addr");
+  var btn    = document.getElementById("go");
+  var hint   = document.getElementById("hint");
+  var result = document.getElementById("result");
+
+  var DISTRICT_QUERY =
+    "https://geo.sandag.org/server/rest/services/Hosted/Council_Districts/FeatureServer/0/query";
+
+  var IDME_GUIDE =
+    "https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/c62423e2-3c7f-4e4d-9138-ff554a6caedc/19347/IDme-San%20Diego%20foreUp%20User%20Guide-Web.pdf";
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c];
+    });
+  }
+
+  function setHint(msg, warn) {
+    hint.textContent = msg;
+    hint.className = warn ? "hint warn" : "hint";
+  }
+
+  function showResult(cls, html) {
+    result.hidden = false;
+    result.className = "result " + cls;
+    result.innerHTML = html;
+    // force reflow so the transition plays
+    void result.offsetWidth;
+    result.classList.add("show");
+  }
+
+  function busy(on) {
+    btn.disabled = on;
+    btn.innerHTML = on ? '<span class="spin"></span>' : "Check address";
+  }
+
+  // --- Address -> coordinates -------------------------------------------
+  async function geocode(address) {
+    // Primary: U.S. Census Bureau geocoder (free, US government, no key)
+    try {
+      var u = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddress"
+            + "?address=" + encodeURIComponent(address)
+            + "&benchmark=Public_AR_Current&format=json";
+      var r = await fetch(u);
+      if (r.ok) {
+        var j = await r.json();
+        var m = j && j.result && j.result.addressMatches && j.result.addressMatches[0];
+        if (m) {
+          return { lng: +m.coordinates.x, lat: +m.coordinates.y,
+                   label: m.matchedAddress, source: "U.S. Census Bureau" };
+        }
+      }
+    } catch (e) { /* fall through to backup */ }
+
+    // Fallback: OpenStreetMap Nominatim
+    try {
+      var u2 = "https://nominatim.openstreetmap.org/search?format=json&limit=1"
+             + "&countrycodes=us&q=" + encodeURIComponent(address);
+      var r2 = await fetch(u2, { headers: { "Accept": "application/json" } });
+      if (r2.ok) {
+        var arr = await r2.json();
+        if (arr && arr.length) {
+          return { lng: parseFloat(arr[0].lon), lat: parseFloat(arr[0].lat),
+                   label: arr[0].display_name, source: "OpenStreetMap" };
+        }
+      }
+    } catch (e2) { /* no match */ }
+
+    return null;
+  }
+
+  // --- Coordinates -> council district (authoritative) ------------------
+  async function findDistrict(lng, lat) {
+    var params = new URLSearchParams({
+      f: "json",
+      geometry: lng + "," + lat,
+      geometryType: "esriGeometryPoint",
+      inSR: "4326",
+      spatialRel: "esriSpatialRelIntersects",
+      outFields: "district,jur_name,name,website,phone",
+      returnGeometry: "false"
+    });
+    var r = await fetch(DISTRICT_QUERY + "?" + params.toString());
+    if (!r.ok) throw new Error("service");
+    var j = await r.json();
+    if (j.error) throw new Error("service");
+    var f = j.features && j.features[0];
+    return f ? f.attributes : null;
+  }
+
+  // --- Render helpers ---------------------------------------------------
+  function matchedLine(g) {
+    return '<p class="matched">📍 <span>Located as <b>' + esc(g.label) +
+           "</b> · " + esc(g.source) + "</p>";
+  }
+
+  function renderInside(attrs, g) {
+    var d = attrs.district;
+    var name = attrs.name || ("Council District " + d);
+    var links = [];
+    if (attrs.website) {
+      var href = /^https?:/i.test(attrs.website) ? attrs.website : "https://" + attrs.website;
+      links.push('<a href="' + esc(href) + '" target="_blank" rel="noopener">Council office ↗</a>');
+    }
+    if (attrs.phone) links.push("<span>" + esc(attrs.phone) + "</span>");
+
+    var districtBlock =
+      '<div class="district">' +
+        '<div class="district-badge">' + esc(d) + "</div>" +
+        '<div class="district-meta">' +
+          '<p class="district-label">Council District</p>' +
+          '<p class="district-name">' + esc(name) + "</p>" +
+          (links.length ? '<p class="district-links">' + links.join("") + "</p>" : "") +
+        "</div>" +
+      "</div>";
+
+    showResult("inside",
+      '<p class="result-flag"><span class="dot"></span>Within city limits</p>' +
+      '<p class="result-verdict">This address appears to be inside the City of San Diego.</p>' +
+      '<p class="result-detail">That&rsquo;s a good preliminary sign. To purchase a Golf ID card, complete residency verification through ID.me with one of the accepted documents below.</p>' +
+      '<a class="cta-verify" href="' + IDME_GUIDE + '" target="_blank" rel="noopener">Verify with ID.me — step-by-step guide <span class="arw">↗</span></a>' +
+      districtBlock +
+      matchedLine(g)
+    );
+  }
+
+  function renderOther(attrs, g) {
+    var jur = attrs.jur_name || "another jurisdiction";
+    showResult("other",
+      '<p class="result-flag"><span class="dot"></span>Outside San Diego</p>' +
+      '<p class="result-verdict">This address is outside the City of San Diego.</p>' +
+      '<p class="result-detail">It falls within the City of ' + esc(jur) +
+      ", so it would not qualify for resident Golf ID rates. A property, student, or active-duty basis below may still apply.</p>" +
+      matchedLine(g)
+    );
+  }
+
+  function renderOutside(g) {
+    showResult("outside",
+      '<p class="result-flag"><span class="dot"></span>Outside city limits</p>' +
+      '<p class="result-verdict">This address is not within the City of San Diego.</p>' +
+      '<p class="result-detail">It appears to be in unincorporated San Diego County or outside the city&rsquo;s council districts, so it would not qualify for resident Golf ID rates on address alone. A property, student, or active-duty basis below may still apply.</p>' +
+      matchedLine(g)
+    );
+  }
+
+  function renderNotFound() {
+    showResult("outside",
+      '<p class="result-flag"><span class="dot"></span>Address not found</p>' +
+      '<p class="result-verdict">We couldn&rsquo;t locate that address.</p>' +
+      '<p class="result-detail">Check the spelling and add the city and ZIP — for example, <b>123 Main St, San Diego, CA 92101</b>.</p>'
+    );
+  }
+
+  function renderError() {
+    showResult("error",
+      '<p class="result-flag"><span class="dot"></span>Lookup unavailable</p>' +
+      '<p class="result-verdict">The boundary service didn&rsquo;t respond.</p>' +
+      '<p class="result-detail">Check your connection and try again in a moment.</p>'
+    );
+  }
+
+  // --- Flow -------------------------------------------------------------
+  async function run() {
+    var address = input.value.trim();
+    if (!address) {
+      setHint("Enter a street address to check.", true);
+      input.focus();
+      return;
+    }
+    setHint("Include the city and ZIP for the most accurate result.", false);
+    result.classList.remove("show");
+    busy(true);
+
+    try {
+      var g = await geocode(address);
+      if (!g) { renderNotFound(); return; }
+
+      var attrs = await findDistrict(g.lng, g.lat);
+      if (!attrs) { renderOutside(g); return; }
+
+      var jur = (attrs.jur_name || "").toLowerCase();
+      if (jur.indexOf("san diego") !== -1) renderInside(attrs, g);
+      else renderOther(attrs, g);
+    } catch (err) {
+      renderError();
+    } finally {
+      busy(false);
+    }
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    run();
+  });
+})();
+</script>
+</body>
+</html>

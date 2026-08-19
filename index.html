@@ -22,6 +22,8 @@
     --backdrop: #D6DCE3;
     --card: #FFFFFF;
     --line: #D9E4EC;
+    --field-line: #808F9E;
+    --placeholder: #647080;
     --muted: #566573;
     --sand: #C4922E;
     --shadow: 0 1px 2px rgba(10,37,64,.06), 0 12px 34px -12px rgba(10,37,64,.20);
@@ -159,17 +161,21 @@
     font-size: 16px;
     color: var(--ink);
     padding: 14px 15px;
-    border: 1.5px solid var(--line);
+    border: 1.5px solid var(--field-line);
     border-radius: 10px;
     background: #FBFDFE;
     transition: border-color .15s, box-shadow .15s;
   }
-  input[type="text"]::placeholder { color: #93A3B1; }
+  input[type="text"]::placeholder { color: var(--placeholder); opacity: 1; }
   input[type="text"]:focus {
     outline: none;
-    border-color: var(--pacific);
-    box-shadow: 0 0 0 3px rgba(14,107,168,.16);
+    border-color: var(--pacific-deep);
+    box-shadow: 0 0 0 3px rgba(8,75,120,.30);
     background: #fff;
+  }
+  input[type="text"][aria-invalid="true"] {
+    border-color: var(--clay);
+    box-shadow: 0 0 0 3px rgba(166,82,26,.18);
   }
 
   button.check {
@@ -188,10 +194,30 @@
   button.check:hover { background: var(--pacific-deep); }
   button.check:active { transform: translateY(1px); }
   button.check:focus-visible {
-    outline: 3px solid rgba(14,107,168,.4);
+    outline: 3px solid var(--pacific-deep);
     outline-offset: 2px;
   }
-  button.check:disabled { opacity: .6; cursor: default; }
+  button.check:disabled { opacity: .7; cursor: default; }
+
+  /* Visible keyboard focus for every interactive element */
+  a:focus-visible,
+  .cta-verify:focus-visible {
+    outline: 3px solid var(--pacific-deep);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+  .hero a:focus-visible { outline-color: #EAF3FA; }
+
+  /* Screen-reader-only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   .hint {
     font-size: 13px;
@@ -467,11 +493,13 @@
   </header>
 
   <main class="wrap">
-    <section class="card">
+    <section class="card" aria-label="City limits address check">
       <form id="lookup" autocomplete="on" novalidate>
         <label class="field-label" for="addr">Street address</label>
         <div class="controls">
           <input id="addr" type="text" inputmode="text"
+                 name="address" autocomplete="street-address"
+                 autocapitalize="words" spellcheck="false"
                  placeholder="e.g. 11480 N Torrey Pines Rd, San Diego, CA 92037"
                  aria-describedby="hint" />
           <button class="check" type="submit" id="go">Check address</button>
@@ -479,14 +507,15 @@
         <p class="hint" id="hint">Include the city and ZIP for the most accurate result.</p>
       </form>
 
-      <div class="result" id="result" role="status" aria-live="polite" hidden></div>
+      <p class="sr-only" id="status" role="status" aria-live="assertive"></p>
+      <div class="result" id="result" role="region" aria-label="Result" aria-live="polite" hidden></div>
 
       <div class="verify">
         <div class="verify-head">
           <h2>Verifying residency to purchase a card</h2>
           <span class="req">Required</span>
         </div>
-        <p class="lead">This tool is a preliminary check only. To actually purchase a City of San Diego Golf ID card, residency must be verified through <a href="https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/c62423e2-3c7f-4e4d-9138-ff554a6caedc/19347/IDme-San%20Diego%20foreUp%20User%20Guide-Web.pdf" target="_blank" rel="noopener">ID.me</a>. We accept only the following:</p>
+        <p class="lead">This tool is a preliminary check only. To actually purchase a City of San Diego Golf ID card, residency must be verified through <a href="https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/c62423e2-3c7f-4e4d-9138-ff554a6caedc/19347/IDme-San%20Diego%20foreUp%20User%20Guide-Web.pdf" target="_blank" rel="noopener">ID.me<span class="sr-only"> (opens in new tab)</span></a>. We accept only the following:</p>
         <p class="accept-label">Accepted documents</p>
         <ol class="docs">
           <li>A valid <b>CA driver&rsquo;s license or ID</b> with an eligible City of San Diego address.</li>
@@ -513,6 +542,7 @@
   var btn    = document.getElementById("go");
   var hint   = document.getElementById("hint");
   var result = document.getElementById("result");
+  var status = document.getElementById("status");
 
   var DISTRICT_QUERY =
     "https://geo.sandag.org/server/rest/services/Hosted/Council_Districts/FeatureServer/0/query";
@@ -532,6 +562,7 @@
   }
 
   function showResult(cls, html) {
+    status.textContent = "";
     result.hidden = false;
     result.className = "result " + cls;
     result.innerHTML = html;
@@ -542,7 +573,14 @@
 
   function busy(on) {
     btn.disabled = on;
-    btn.innerHTML = on ? '<span class="spin"></span>' : "Check address";
+    if (on) {
+      btn.setAttribute("aria-label", "Checking address");
+      btn.innerHTML = '<span class="spin" aria-hidden="true"></span>';
+      status.textContent = "Checking address\u2026";
+    } else {
+      btn.removeAttribute("aria-label");
+      btn.innerHTML = "Check address";
+    }
   }
 
   // --- Address -> coordinates -------------------------------------------
@@ -611,7 +649,7 @@
     var links = [];
     if (attrs.website) {
       var href = /^https?:/i.test(attrs.website) ? attrs.website : "https://" + attrs.website;
-      links.push('<a href="' + esc(href) + '" target="_blank" rel="noopener">Council office ↗</a>');
+      links.push('<a href="' + esc(href) + '" target="_blank" rel="noopener">Council office <span aria-hidden="true">\u2197</span><span class="sr-only"> (opens in new tab)</span></a>');
     }
     if (attrs.phone) links.push("<span>" + esc(attrs.phone) + "</span>");
 
@@ -626,10 +664,10 @@
       "</div>";
 
     showResult("inside",
-      '<p class="result-flag"><span class="dot"></span>Within city limits</p>' +
+      '<p class="result-flag"><span class="dot" aria-hidden="true"></span>Within city limits</p>' +
       '<p class="result-verdict">This address appears to be inside the City of San Diego.</p>' +
       '<p class="result-detail">That&rsquo;s a good preliminary sign. To purchase a Golf ID card, complete residency verification through ID.me with one of the accepted documents below.</p>' +
-      '<a class="cta-verify" href="' + IDME_GUIDE + '" target="_blank" rel="noopener">Verify with ID.me — step-by-step guide <span class="arw">↗</span></a>' +
+      '<a class="cta-verify" href="' + IDME_GUIDE + '" target="_blank" rel="noopener">Verify with ID.me — step-by-step guide <span class="arw" aria-hidden="true">↗</span><span class="sr-only"> (opens in new tab)</span></a>' +
       districtBlock +
       matchedLine(g)
     );
@@ -638,7 +676,7 @@
   function renderOther(attrs, g) {
     var jur = attrs.jur_name || "another jurisdiction";
     showResult("other",
-      '<p class="result-flag"><span class="dot"></span>Outside San Diego</p>' +
+      '<p class="result-flag"><span class="dot" aria-hidden="true"></span>Outside San Diego</p>' +
       '<p class="result-verdict">This address is outside the City of San Diego.</p>' +
       '<p class="result-detail">It falls within the City of ' + esc(jur) +
       ", so it would not qualify for resident Golf ID rates. A property, student, or active-duty basis below may still apply.</p>" +
@@ -648,7 +686,7 @@
 
   function renderOutside(g) {
     showResult("outside",
-      '<p class="result-flag"><span class="dot"></span>Outside city limits</p>' +
+      '<p class="result-flag"><span class="dot" aria-hidden="true"></span>Outside city limits</p>' +
       '<p class="result-verdict">This address is not within the City of San Diego.</p>' +
       '<p class="result-detail">It appears to be in unincorporated San Diego County or outside the city&rsquo;s council districts, so it would not qualify for resident Golf ID rates on address alone. A property, student, or active-duty basis below may still apply.</p>' +
       matchedLine(g)
@@ -657,7 +695,7 @@
 
   function renderNotFound() {
     showResult("outside",
-      '<p class="result-flag"><span class="dot"></span>Address not found</p>' +
+      '<p class="result-flag"><span class="dot" aria-hidden="true"></span>Address not found</p>' +
       '<p class="result-verdict">We couldn&rsquo;t locate that address.</p>' +
       '<p class="result-detail">Check the spelling and add the city and ZIP — for example, <b>123 Main St, San Diego, CA 92101</b>.</p>'
     );
@@ -665,7 +703,7 @@
 
   function renderError() {
     showResult("error",
-      '<p class="result-flag"><span class="dot"></span>Lookup unavailable</p>' +
+      '<p class="result-flag"><span class="dot" aria-hidden="true"></span>Lookup unavailable</p>' +
       '<p class="result-verdict">The boundary service didn&rsquo;t respond.</p>' +
       '<p class="result-detail">Check your connection and try again in a moment.</p>'
     );
@@ -676,9 +714,12 @@
     var address = input.value.trim();
     if (!address) {
       setHint("Enter a street address to check.", true);
+      input.setAttribute("aria-invalid", "true");
+      status.textContent = "Enter a street address to check.";
       input.focus();
       return;
     }
+    input.removeAttribute("aria-invalid");
     setHint("Include the city and ZIP for the most accurate result.", false);
     result.classList.remove("show");
     busy(true);
